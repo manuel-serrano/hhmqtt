@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Tue Oct  4 14:43:55 2016                          */
-#*    Last change :  Thu Apr  4 08:33:11 2024 (serrano)                */
+#*    Last change :  Thu Apr  4 08:46:27 2024 (serrano)                */
 #*    Copyright   :  2016-24 Manuel Serrano                            */
 #*    -------------------------------------------------------------    */
 #*    install                                                          */
@@ -18,12 +18,13 @@ HOPC = @HOPC@
 HFLAGS = @HFLAGS@
 BFLAGS =
 HOPCMJS = node_modules/@hop/hopc/bin/hopc.mjs
+HHC = node_modules/@hop/hiphop/bin/hhc.mjs
 
 HHMQTTNPMDIR=hhmqtt-$(RELEASE)-$(BUILDID)
 
 HHMQTT_HOP = 
-HHMQTT_HH = 
-HHMQTT_TS = hhmqtt.hh.ts config.ts
+HHMQTT_HH = mqtt.hh.ts
+HHMQTT_TS = utils.ts config.ts hhmqtt.ts
 
 HHMQTT_CLIENT_TS = 
 HHMQTT_CLIENT_HOP = 
@@ -40,8 +41,8 @@ SRC_SRV = $(HHMQTT_TS) $(HHMQTT_JS) $(NODE_MODULES_JS:%=node_modules/%)
 
 SOFILES = $(HHMQTT_SO) $(NODE_MODULES_SO)
 HOPFILES = $(HHMQTT_HOP:%.hop.ts=src/%.ts) $(HHMQTT_CLIENT_HOP:%.hop.ts=src/%.ts)
-TSFILES = $(HHMQTT_TS:%.ts=src/%.ts) $(HHMQTT_HH:%.ts=src/%.ts) $(HHMQTT_HOP:%.hop.ts=src/%.ts)
-JSFILES = $(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HOP:%.hop.ts=dist/%.js)
+TSFILES = $(HHMQTT_TS:%.ts=src/%.ts) $(HHMQTT_HH:%.hh.ts=src/%.ts) $(HHMQTT_HOP:%.hop.ts=src/%.ts)
+JSFILES = $(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.ts=dist/%.js) $(HHMQTT_HOP:%.hop.ts=dist/%.js)
 CLFILES = $(HHMQTT_CLIENT_HOP:%.hop.ts=client/%.js) $(HHMQTT_CLIENT_TS:%.ts=client/%.js) $(HHMQTT_CLIENT_JS:%.js=client/%.js)
 
 SODIR= @SODIR@
@@ -68,31 +69,16 @@ do: npm-sans-rm
 %.so: %.ts
 	$(HOPC) $(HFLAGS) -y -o $@ $< $(BFLAGS)
 
-dist/hhmqtt.js: src/xml.ts
-
-npm/$(HHMQTTNPMDIR)/src/xml.ts: npm/$(HHMQTTNPMDIR)/src/xml.hop.ts
-	$(HOPCMJS) -o $@ $<
-
-npm/$(HHMQTTNPMDIR)/dist/xml.js: npm/$(HHMQTTNPMDIR)/src/xml.ts
-	$(HOPCMJS) -o $@ $<
-
-npm/$(HHMQTTNPMDIR)/src/client.ts: npm/$(HHMQTTNPMDIR)/src/client.hop.ts
-	$(HOPCMJS) --client -o $@ $<
-
-npm/$(HHMQTTNPMDIR)/client/client.js: npm/$(HHMQTTNPMDIR)/src/client.ts
-	$(HOPCMJS) -o $@ $<
-
 npm/$(HHMQTTNPMDIR)/dist/%.js: npm/$(HHMQTTNPMDIR)/src/%.ts
 	$(HOPCMJS) -o $@ $<
 
 npm/$(HHMQTTNPMDIR)/src/%: src/%
 	cp $< $@
 
-npm/$(HHMQTTNPMDIR)/client/%.js: npm/$(HHMQTTNPMDIR)/src/%.ts
-	$(HOPCMJS) -o $@ $<
+npm/$(HHMQTTNPMDIR)/src/mqtt.ts: npm/$(HHMQTTNPMDIR)/src/mqtt.hh.ts
+	$(HHC) -o $@ $<
 
-npm/$(HHMQTTNPMDIR)/client/%.js: src/%.js
-	cp $< $@
+npm/$(HHMQTTNPMDIR)/src/hhmqtt.ts: npm/$(HHMQTTNPMDIR)/src/mqtt.ts
 
 dist:
 	mkdir -p dist
@@ -172,8 +158,8 @@ npm: npm-sans-rm
 clean:
 	rm -f $(SOFILES)
 	rm -rf npm
-	rm -rf package-lock.json
-	rm -rf node_modules
 
 cleanall: clean
+	rm -rf package-lock.json
+	rm -rf node_modules
 	rm -f configure.js

@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/hhmqtt.hh.ts           */
+/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/hhmqtt.ts          */
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Apr  4 08:30:25 2024 (serrano)                */
+/*    Last change :  Thu Apr  4 10:00:31 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -14,8 +14,8 @@
 /*---------------------------------------------------------------------*/
 import mqtt from "mqtt";
 import minimist from 'minimist';
-import { ReactiveMachine } from "@hop/hiphop";
-import config from "../dist/config.js";
+import * as config from "./config.js";
+import { mach } from "./mqtt.js";
 
 /*---------------------------------------------------------------------*/
 /*    main ...                                                         */
@@ -37,13 +37,28 @@ function main(argv) {
       process.exit(0);
    }
 
-   if (args.v || args.verbose) {
-      hopConfig.verbose = args.v;
-   }
-
    const cfg = config.init();
 
+   if (args.v || args.verbose) {
+      cfg.verbose = args.v;
+   }
+
    let client = mqtt.connect(cfg.server);
+
+   client.on("connect", () => {
+      console.log("connected...");
+      client.subscribe("zigbee2mqtt/bridge/devices");
+      client.publish("presence", "Hello mqtt");
+   });
+
+   mach.react();
+   
+   client.on("message", (topic, message) => {
+      console.log("got ", topic);
+      mach.react({message: {topic, message}});
+   });
+
 }
 
+main(process.argv);
 
