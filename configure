@@ -1,0 +1,165 @@
+#!/bin/sh
+#*=====================================================================*/
+#*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/configure              */
+#*    -------------------------------------------------------------    */
+#*    Author      :  Manuel Serrano                                    */
+#*    Creation    :  Sat Jul 31 06:49:37 2004                          */
+#*    Last change :  Thu Apr  4 08:31:41 2024 (serrano)                */
+#*    Copyright   :  2004-24 Manuel Serrano                            */
+#*    -------------------------------------------------------------    */
+#*    HHMQTT autoconfiguration                                         */
+#*=====================================================================*/
+
+#*---------------------------------------------------------------------*/
+#*    configure parameters                                             */
+#*---------------------------------------------------------------------*/
+version=`grep version package.json | awk '{ print $2 }' | sed 's/[",]//g'`
+license=`grep license package.json | awk '{ print $2 }' | sed 's/[",]//g'`
+date=`date +'%d %B %Y'`
+minor=
+builid=
+
+license=gpl
+
+#*---------------------------------------------------------------------*/
+#*    User flags                                                       */
+#*---------------------------------------------------------------------*/
+prefix=/usr/local
+etcdir=$prefix/etc
+libdir=$prefix/lib/gallery
+bindir=$prefix/bin
+mandir=$prefix/man
+
+hop=hop
+hopc=hopc
+hflags=-O2
+
+main=`grep main package.json | awk '{ print $2 }' | sed 's/[",]//g'`
+
+# environment parsing
+if [ "$HFLAGS " != " " ]; then
+  hflags=$HFLAGS;
+fi
+
+# Argument parsing
+while : ; do
+  case $1 in
+    "")
+      break;;
+
+    --prefix=*)
+      prefix="`echo $1 | sed 's/^[^=]*=//'`";
+      bindir=$prefix/bin;
+      libdir=$prefix/lib/gallery;
+      mandir=$prefix/man/$mansec;
+      etcdir=$prefix/etc;
+      contribsdir=$prefix/share/hop/contribs
+      docdir=$prefix/share/doc/hop;;
+
+    --etcdir=*)
+      etcdir="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --bindir=*)
+      bindir="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --libdir=*)
+      libdir="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --mandir=*)
+      mandir="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --hop=*)
+      hop="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --hopc=*)
+      hopc="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --hflags=*)
+      hflags="`echo $1 | sed 's/^[^=]*=//'`";;
+
+    --debug)
+      hflags=-g;;
+
+    -*)
+      if [ $1 != "--help" ]; then
+        echo "*** Configure error, unknown option $1" >&2;
+        echo >&2;
+      fi
+      echo "Usage: configure [options]" >&2;
+      echo "" >&2;
+      echo "options:" >&2;
+      echo "   --help..................... this message" >&2;
+      echo "   --hop=path................. hop command" >&2;
+      echo "   --hopc=path................ hopc command" >&2;
+      echo "   --hflags=flags............. hopc flags" >&2;
+      echo "   --prefix=dir............... prefix to HOP install" >&2;
+      echo "   --etcdir=dir............... Hop etc directory" >&2;
+      echo "   --bindir=dir............... alternative Hop bin directory" >&2;
+      echo "   --libdir=dir............... alternative Hop lib directory" >&2;
+      echo "   --mandir=dir............... alternative Hop man directory" >&2;
+      echo "" >&2;
+      exit 255;
+  esac
+  shift
+done
+
+#*---------------------------------------------------------------------*/
+#*    buildid                                                          */
+#*---------------------------------------------------------------------*/
+if [ "$buildid " = " " ]; then
+  buildid=`git rev-parse --short HEAD`
+fi
+
+#*---------------------------------------------------------------------*/
+#*    sopath                                                           */
+#*---------------------------------------------------------------------*/
+hopversion=`$hop --configure --version`
+libdir=`$hop --configure --libdir`
+buildarch=`$hop --configure --build-arch`
+sodirname=`$hop --configure --so-dirname`
+sodir="$libdir/hhmqtt/$version/so/hop/$hopversion/$buildid/$buildarch"
+
+#*---------------------------------------------------------------------*/
+#*    Create directories                                               */
+#*---------------------------------------------------------------------*/
+for p in Makefile; do
+  cat $p.in \
+      | sed -e "s|@RELEASE@|$version|g" \
+            -e "s|@BRANCH@|$branch|g" \
+            -e "s|@BUILDID@|$buildid|g" \
+            -e "s|@MAIN@|$main|g" \
+            -e "s|@DATE@|$date|g" \
+            -e "s|@DEVEL@|$devel|g" \
+            -e "s|@DEBUG@|$debug|g" \
+            -e "s|@BUILDDIR@|$PWD|g" \
+            -e "s|@BINDIR@|$bindir|g" \
+            -e "s|@LIBDIR@|$libdir/hhmqtt|g" \
+            -e "s|@LIBPATH@|$libdir/hop/$hopversion|g" \
+            -e "s|@HOP@|$hop|g" \
+            -e "s|@HOPC@|$hopc|g" \
+            -e "s|@HFLAGS@|$hflags|g" \
+            -e "s|@SODIR@|$sodir|g" \
+  > $p
+done
+
+#*---------------------------------------------------------------------*/
+#*    Summary                                                          */
+#*---------------------------------------------------------------------*/
+
+# Generate the config.status file to please debian packages
+echo "configuration completed" > config.status
+
+echo "** Configuration summary **"
+echo 
+echo "Release:"
+echo "  hhmqtt release number................. $version"
+echo "  buildid............................... $buildid"
+echo "  hop command........................... $hop"
+echo "  hopc command.......................... $hopc"
+echo "  hflags ............................... $hflags"
+echo "  etc directory......................... $etcdir"
+echo "  bin directory......................... $bindir"
+echo "  lib directory......................... $libdir/hhmqtt"
+echo "  man directory......................... $mandir"
+echo "  so directory.......................... $sodir"
+

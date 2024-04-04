@@ -1,0 +1,18 @@
+{
+   "name": "@hop/hhmqtt",
+   "main": "dist/hhmqtt.js",
+   "version": "0.0.1",
+   "type": "module",
+   "dependencies": {
+     "@hop/hiphop": "https://www-sop.inria.fr/members/Manuel.Serrano/software/npmx/hiphop.tgz",
+     "mqtt": "^5.5.0",
+     "minimist": "^1.2.8"
+   },
+   "devDependencies": {
+     "@hop/hopc": "https://www-sop.inria.fr/members/Manuel.Serrano/software/npmx/hopc.tgz",
+     "mocha": "^10.2.0"
+    },
+   "scripts": {
+     "test": "HIPHOP_RESOLVE=\"./lib/hiphop.js\" NODE_OPTIONS=\"--enable-source-maps --no-warnings --loader ./lib/hiphop-loader.mjs\" mocha --exit test/**/*.test.js"
+   }
+}

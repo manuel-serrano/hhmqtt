@@ -1,0 +1,179 @@
+#*=====================================================================*/
+#*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/Makefile.in            */
+#*    -------------------------------------------------------------    */
+#*    Author      :  Manuel Serrano                                    */
+#*    Creation    :  Tue Oct  4 14:43:55 2016                          */
+#*    Last change :  Thu Apr  4 08:33:11 2024 (serrano)                */
+#*    Copyright   :  2016-24 Manuel Serrano                            */
+#*    -------------------------------------------------------------    */
+#*    install                                                          */
+#*=====================================================================*/
+BINDIR=@BINDIR@
+LIBDIR=@LIBDIR@
+RELEASE=@RELEASE@
+BUILDID=@BUILDID@
+
+HOP = @HOP@
+HOPC = @HOPC@
+HFLAGS = @HFLAGS@
+BFLAGS =
+HOPCMJS = node_modules/@hop/hopc/bin/hopc.mjs
+
+HHMQTTNPMDIR=hhmqtt-$(RELEASE)-$(BUILDID)
+
+HHMQTT_HOP = 
+HHMQTT_HH = 
+HHMQTT_TS = hhmqtt.hh.ts config.ts
+
+HHMQTT_CLIENT_TS = 
+HHMQTT_CLIENT_HOP = 
+HHMQTT_CLIENT_JS = 
+
+HHMQTT = $(HHMQTT_HOP) $(HHMQTT_TS) $(HHMQTT_CLIENT_TS) $(HHMQTT_CLIENT_JS)
+HHMQTT_SO = $(HHMQTT_TS:%.ts=%.so)
+HHMQTT_JS = $(HHMQTT_TS:%.ts=dist/%.js)
+
+NODE_MODULES_JS =   
+NODE_MODULES_SO = $(NODE_MODULES_JS:%.js=node_modules/%.so)
+
+SRC_SRV = $(HHMQTT_TS) $(HHMQTT_JS) $(NODE_MODULES_JS:%=node_modules/%)
+
+SOFILES = $(HHMQTT_SO) $(NODE_MODULES_SO)
+HOPFILES = $(HHMQTT_HOP:%.hop.ts=src/%.ts) $(HHMQTT_CLIENT_HOP:%.hop.ts=src/%.ts)
+TSFILES = $(HHMQTT_TS:%.ts=src/%.ts) $(HHMQTT_HH:%.ts=src/%.ts) $(HHMQTT_HOP:%.hop.ts=src/%.ts)
+JSFILES = $(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HOP:%.hop.ts=dist/%.js)
+CLFILES = $(HHMQTT_CLIENT_HOP:%.hop.ts=client/%.js) $(HHMQTT_CLIENT_TS:%.ts=client/%.js) $(HHMQTT_CLIENT_JS:%.js=client/%.js)
+
+SODIR= @SODIR@
+JSDIR = $(LIBDIR)/$(RELEASE)
+
+#*---------------------------------------------------------------------*/
+#*    do:                                                              */
+#*---------------------------------------------------------------------*/
+do: npm-sans-rm
+	echo "done..."
+
+#*---------------------------------------------------------------------*/
+#*    .suffixes                                                        */
+#*---------------------------------------------------------------------*/
+.SUFFIXES:
+.SUFFIXES: .js .ts .so
+
+#*---------------------------------------------------------------------*/
+#*    The implicit rules                                               */
+#*---------------------------------------------------------------------*/
+%.so: %.js
+	$(HOPC) $(HFLAGS) -y -o $@ $< $(BFLAGS)
+
+%.so: %.ts
+	$(HOPC) $(HFLAGS) -y -o $@ $< $(BFLAGS)
+
+dist/hhmqtt.js: src/xml.ts
+
+npm/$(HHMQTTNPMDIR)/src/xml.ts: npm/$(HHMQTTNPMDIR)/src/xml.hop.ts
+	$(HOPCMJS) -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/dist/xml.js: npm/$(HHMQTTNPMDIR)/src/xml.ts
+	$(HOPCMJS) -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/src/client.ts: npm/$(HHMQTTNPMDIR)/src/client.hop.ts
+	$(HOPCMJS) --client -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/client/client.js: npm/$(HHMQTTNPMDIR)/src/client.ts
+	$(HOPCMJS) -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/dist/%.js: npm/$(HHMQTTNPMDIR)/src/%.ts
+	$(HOPCMJS) -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/src/%: src/%
+	cp $< $@
+
+npm/$(HHMQTTNPMDIR)/client/%.js: npm/$(HHMQTTNPMDIR)/src/%.ts
+	$(HOPCMJS) -o $@ $<
+
+npm/$(HHMQTTNPMDIR)/client/%.js: src/%.js
+	cp $< $@
+
+dist:
+	mkdir -p dist
+
+#*---------------------------------------------------------------------*/
+#*    install                                                          */
+#*---------------------------------------------------------------------*/
+install: # install-so
+	cp bin/hhmqtt $(DESTDIR)$(BINDIR)/hhmqtt
+	chmod a+rx $(DESTDIR)$(BINDIR)/hhmqtt
+	mkdir -p $(DESTDIR)$(LIBDIR)
+	mkdir -p $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf img $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf css $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf svg $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf node_modules $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf *.so $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp -rf $(HHMQTT_CLIENT) $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp package.json $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp $(HHMQTT_TS) $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp $(HHMQTT_JS) $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	cp $(HHMQTT_CLIENT) $(DESTDIR)$(LIBDIR)/$(RELEASE)
+	chmod -R a+rx $(DESTDIR)$(LIBDIR)
+	find $(DESTDIR)$(LIBDIR)/$(RELEASE) -name '*.so' -exec touch {} \;
+
+install-so:
+	mkdir -p $(DESTDIR)$(SODIR)
+	for p in $(SRC_SRV); do \
+	   d=`dirname $$p`; \
+	   f=`basename $$p .js`; \
+	   f=`basename $$f .ts`; \
+           t=`$(HOP) --no-zeroconf --no-server --eval "(print (basename (hop-sofile-path \"$(JSDIR)/$$p\")))"`; \
+	   echo "installing `basename $$t`..."; \
+	   cp $$d/$$f.so $(DESTDIR)$(SODIR)/`basename $$t`; \
+        done
+
+uninstall:
+	rm -rf $(DESTDIR)$(LIBDIR)
+	rm -rf $(DESTDIR)$(BINDIR)/hhmqtt
+
+#*---------------------------------------------------------------------*/
+#*    npm                                                              */
+#*---------------------------------------------------------------------*/
+.PHONY: npm npm-module npm-dirs npm-src npm-src-hop
+
+npm-dirs:
+	mkdir -p npm/$(HHMQTTNPMDIR)
+	mkdir -p npm/$(HHMQTTNPMDIR)/lib
+	mkdir -p npm/$(HHMQTTNPMDIR)/client
+	mkdir -p npm/$(HHMQTTNPMDIR)/dist
+	mkdir -p npm/$(HHMQTTNPMDIR)/src
+
+npm-dist: $(JSFILES:%=npm/$(HHMQTTNPMDIR)/%)
+
+npm-client: $(CLFILES:%=npm/$(HHMQTTNPMDIR)/%)
+
+npm-src: $(TSFILES:%=npm/$(HHMQTTNPMDIR)/%) $(HOPFILES:%=npm/$(HHMQTTNPMDIR)/%) $(HHMQTT_CLIENT_TS:%=npm/$(HHMQTTNPMDIR)/src/%) $(HHMQTT_CLIENT_JS:%=npm/$(HHMQTTNPMDIR)/src/%)
+
+npm-sans-rm: npm-dirs 
+	cp package.json npm/$(HHMQTTNPMDIR)
+	cp -r css npm/$(HHMQTTNPMDIR)
+	cp -r svg npm/$(HHMQTTNPMDIR)
+	cp -r img npm/$(HHMQTTNPMDIR)
+	cp -r bin npm/$(HHMQTTNPMDIR)
+	$(MAKE) npm-src
+	$(MAKE) npm-dist
+	$(MAKE) npm-client
+	(cd npm; tar --exclude="*.so" -zcvf $(HHMQTTNPMDIR).tgz $(HHMQTTNPMDIR))
+
+npm: npm-sans-rm
+	(cd npm; rm -rf $(HHMQTTNPMDIR))
+
+
+#*---------------------------------------------------------------------*/
+#*    clean                                                            */
+#*---------------------------------------------------------------------*/
+clean:
+	rm -f $(SOFILES)
+	rm -rf npm
+	rm -rf package-lock.json
+	rm -rf node_modules
+
+cleanall: clean
+	rm -f configure.js
