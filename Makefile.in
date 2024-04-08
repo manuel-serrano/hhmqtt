@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Tue Oct  4 14:43:55 2016                          */
-#*    Last change :  Thu Apr  4 08:46:27 2024 (serrano)                */
+#*    Last change :  Fri Apr  5 08:41:33 2024 (serrano)                */
 #*    Copyright   :  2016-24 Manuel Serrano                            */
 #*    -------------------------------------------------------------    */
 #*    install                                                          */
@@ -76,7 +76,7 @@ npm/$(HHMQTTNPMDIR)/src/%: src/%
 	cp $< $@
 
 npm/$(HHMQTTNPMDIR)/src/mqtt.ts: npm/$(HHMQTTNPMDIR)/src/mqtt.hh.ts
-	$(HHC) -o $@ $<
+	(cd npm/$(HHMQTTNPMDIR); ../../$(HHC) -o src/mqtt.ts src/mqtt.hh.ts)
 
 npm/$(HHMQTTNPMDIR)/src/hhmqtt.ts: npm/$(HHMQTTNPMDIR)/src/mqtt.ts
 

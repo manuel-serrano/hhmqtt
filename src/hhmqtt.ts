@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Apr  4 10:00:31 2024 (serrano)                */
+/*    Last change :  Thu Apr  4 14:07:46 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -12,29 +12,38 @@
 /*---------------------------------------------------------------------*/
 /*    The module                                                       */
 /*---------------------------------------------------------------------*/
-import mqtt from "mqtt";
 import minimist from 'minimist';
 import * as config from "./config.js";
-import { mach } from "./mqtt.js";
+import mqtt from "mqtt";
+import { click } from "./click.js";
+import { clicktmt } from "./clicktmt.js";
+
+/*---------------------------------------------------------------------*/
+/*    usage ...                                                        */
+/*---------------------------------------------------------------------*/
+function usage(status) {
+   console.log("Usage hhmqtt [options] click|clicktmt");
+   console.log("");
+   console.log("Options:");
+   console.log("  -h|--help          This message.");
+   console.log("  --version          Display version.");
+   process.exit(status);
+}
 
 /*---------------------------------------------------------------------*/
 /*    main ...                                                         */
 /*---------------------------------------------------------------------*/
 function main(argv) {
    const args = minimist(argv, {});
+   let example;
    
-    if (args.h || args.help) {
-      console.log("Usage gallery [options] [dir]");
-      console.log("");
-      console.log("Options:");
-      console.log("  -h|--help          This message.");
-      console.log("  --version          Display version.");
-      process.exit(0);
+   if (args.h || args.help) {
+      usage(0);
    }
    
    if (args.version) {
-      console.log("Gallery v" + config.configDefault.version);
-      process.exit(0);
+      console.log("HHMQTT v" + config.configDefault.version);
+      usage(0);
    }
 
    const cfg = config.init();
@@ -43,21 +52,56 @@ function main(argv) {
       cfg.verbose = args.v;
    }
 
-   let client = mqtt.connect(cfg.server);
-
-   client.on("connect", () => {
-      console.log("connected...");
-      client.subscribe("zigbee2mqtt/bridge/devices");
-      client.publish("presence", "Hello mqtt");
-   });
-
-   mach.react();
+   switch (args._[2]) {
+      case "click": example = click; break;
+      case "clicktmt": example = clicktmt; break;
+      default: usage(1);
+   }
    
-   client.on("message", (topic, message) => {
-      console.log("got ", topic);
-      mach.react({message: {topic, message}});
+   // start the MQTT clien
+   let client = mqtt.connect(cfg.server);
+   
+   // bind the event handler
+   client.on("connect", () => {
+      client.subscribe("zigbee2mqtt/bridge/devices");
+
+      console.log("client connect to", cfg.server);
+      client.on("message", (topic, message) => {
+	 if (topic === "zigbee2mqtt/bridge/devices") {
+	    const devices = JSON.parse(message.toString());
+
+	    console.log("== devices");
+
+	    // build the hiphop program accordingly
+	    devices.forEach(d => {
+	       if (d.definition) {
+		  const id = `zigbee2mqtt/${d.ieee_address}`;
+		  console.log(" ", d.definition.vendor, d.definition.model, id);
+		  console.log("   ", d.definition.exposes.map(e => e.label));
+
+		  if (example.topics[id]) {
+		     // we are interested by this device
+		     client.subscribe(id);
+		     if (example.topics[id].out) {
+			const idset = id + "/set";
+			example.mach.addEventListener(example.topics[id].out, v => client.publish(idset, JSON.stringify(v.nowval)));
+		     }
+		  }
+	       }
+	    });
+	 }
+
+	 // forward the MQTT message to HipHop
+	 if (example.topics[topic]?.in) {
+	    example.mach.react({[example.topics[topic].in]: JSON.parse(message.toString())});
+	 } else {
+	    console.log("unhandled message", topic, message.toString());
+	 }
+      });
    });
 
+   // init the example.machine
+   example.mach.react();
 }
 
 main(process.argv);
