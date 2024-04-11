@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Mon Apr  8 09:21:46 2024 (serrano)                */
+/*    Last change :  Thu Apr 11 12:03:08 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT                                                      */
@@ -44,6 +44,7 @@ function stateFlip(v) {
       return { state: "ON" };
    }
 }
+
 /*---------------------------------------------------------------------*/
 /*    mqtt ...                                                         */
 /*---------------------------------------------------------------------*/
@@ -52,7 +53,6 @@ const mqtt = hiphop module(cfg) {
    out ... ${Object.keys(topics).filter(k => topics[k].out).map(k => topics[k].out)};
    
    every (switch1.now) {
-      pragma { console.log("switch1", switch1.nowval); }
       emit plug1Out(stateFlip(plug1.nowval));
    }
 }

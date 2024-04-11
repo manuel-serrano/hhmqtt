@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Mon Apr  8 10:14:15 2024 (serrano)                */
+/*    Last change :  Thu Apr 11 12:03:16 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT example                                              */
@@ -45,6 +45,7 @@ function stateFlip(v) {
       return { state: "ON" };
    }
 }
+
 /*---------------------------------------------------------------------*/
 /*    mqtt ...                                                         */
 /*---------------------------------------------------------------------*/
@@ -53,14 +54,11 @@ const mqtt = hiphop module(cfg) {
    out ... ${Object.keys(topics).filter(k => topics[k].out).map(k => topics[k].out)};
    
    every (switch1.now) {
-      pragma { console.log("switch1", switch1.nowval); }
       if (switch1.nowval.action === "single") {
 	 emit plug1Out(stateFlip(plug1.nowval));
       } else if (switch1.nowval.action === "double") {
-	 pragma { console.log("switch on..."); }
 	 emit plug1Out({ state: "ON" });
 	 run timeout(2 * 1000) {};
-	 pragma { console.log("switch off..."); }
 	 emit plug1Out({ state: "OFF" });
       }
    }

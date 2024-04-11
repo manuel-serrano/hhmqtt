@@ -60,8 +60,8 @@ npm run build
 The generated files are located in the `dist` directory.
 
 
-Configuring the example
------------------------
+Configuring the examples
+------------------------
 
 To keep it as simple as possible, each example (`click`, `clicktmt`, ...)
 uses an explicit list of supported Zigbee devices that are referenced
