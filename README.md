@@ -1,7 +1,7 @@
 HipHop MQTT
 ===========
 
-![branch workflow](https://github.com/manuel-serrano/bigloo/actions/workflows/hhmqtt.yml/badge.svg)
+![branch workflow](https://github.com/manuel-serrano/hhmqtt/actions/workflows/hhmqtt.yml/badge.svg)
 
 This repository shows and illustrates how to program MQTT applications 
 with Hiphop.

@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Thu Apr 11 10:09:03 2024 (serrano)                */
+#*    Last change :  Thu Apr 11 11:33:31 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -44,3 +44,7 @@ src/%.ts: src/%.hh.ts
 
 $(HHMQTT_TS:%.ts=src/%.ts): $(HHMQTT_HH:%.hh.ts=src/%.ts)
 
+$(OBJECTS): dist
+
+dist:
+	mkdir -p dist
