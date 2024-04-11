@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Thu Apr 11 12:03:08 2024 (serrano)                */
+/*    Last change :  Thu Apr 11 12:05:00 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT                                                      */
@@ -25,8 +25,7 @@ interface Topics {
 /*---------------------------------------------------------------------*/
 /*    topics                                                           */
 /*---------------------------------------------------------------------*/
-//const topics: Topics = {
-const topics = {
+const topics: Topics = {
    "zigbee2mqtt/bridge/devices": { in: "newDevices" },
    "zigbee2mqtt/0x00124b00246cd6a7": { in: "switch1" },
    "zigbee2mqtt/0x00124b0024c27d98": { in: "plug1", out: "plug1Out" }
