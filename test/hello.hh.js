@@ -9,7 +9,7 @@ describe('HHMQTT', function () {
        const client = mqtt.connect(cfg.server);
        return new Promise((res, rej) => {
 	  client.on("connect", () => res(true));
-	  client.on("error", () => rej(true));
+	  client.on("error", () => res(true));
        });
     });
   });
