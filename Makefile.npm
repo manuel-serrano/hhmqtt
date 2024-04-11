@@ -1,0 +1,46 @@
+#*=====================================================================*/
+#*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/Makefile.npm           */
+#*    -------------------------------------------------------------    */
+#*    Author      :  Manuel Serrano                                    */
+#*    Creation    :  Thu Apr 11 09:11:01 2024                          */
+#*    Last change :  Thu Apr 11 10:09:03 2024 (serrano)                */
+#*    Copyright   :  2024 Manuel Serrano                               */
+#*    -------------------------------------------------------------    */
+#*    HHMQTT - An example of MQTT apps programmed with HipHop          */
+#*=====================================================================*/
+
+#*---------------------------------------------------------------------*/
+#*    Compilers                                                        */
+#*---------------------------------------------------------------------*/
+ROOT=.
+HOPC=$(ROOT)/node_modules/@hop/hopc/bin/hopc.mjs
+HHC=$(ROOT)/node_modules/@hop/hiphop/bin/hhc.mjs
+
+#*---------------------------------------------------------------------*/
+#*    Source files ...                                                 */
+#*---------------------------------------------------------------------*/
+HHMQTT_TS=utils.ts config.ts hhmqtt.ts
+HHMQTT_HH=click.hh.ts clicktmt.hh.ts
+
+SOURCES=$(HHMQTT_TS:%=src/%) $(HHMQTT_HH:%=src/%) 
+OBJECTS=$(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.ts=dist/%.js)
+
+#*---------------------------------------------------------------------*/
+#*    Public targets                                                   */
+#*---------------------------------------------------------------------*/
+build: $(OBJECTS)
+
+clean:: 
+	rm -f $(OBJECTS)
+
+#*---------------------------------------------------------------------*/
+#*    Compilation rules and dependencies                               */
+#*---------------------------------------------------------------------*/
+dist/%.js: src/%.ts
+	$(HOPC) $(HFLAGS) -o $@ $<
+
+src/%.ts: src/%.hh.ts
+	$(HHC) -o $@ $<
+
+$(HHMQTT_TS:%.ts=src/%.ts): $(HHMQTT_HH:%.hh.ts=src/%.ts)
+
