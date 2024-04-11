@@ -14,10 +14,10 @@ To install the package in the current directory, execute the
 following commands:
 
 ```
-npm install git@github.com:manuel-serrano/hhmqtt.git
+npm install https://github.com/manuel-serrano/hhmqtt.git
 cd node_modules/@hop/hhmqtt
-npm install --save-dev
-
+npm install
+npm run build
 ```
 
 Testing and Running
@@ -32,8 +32,16 @@ npm test
 To run the application:
 
 ```
+npm start click
+```
+
+In this command line, `click` is an option. To see the whole list of
+supported options, use:
+
+```
 npm start
 ```
+
 
 Modifying and re-compiling the sources
 --------------------------------------
@@ -52,3 +60,16 @@ npm run build
 The generated files are located in the `dist` directory.
 
 
+Configuring the example
+-----------------------
+
+To keep it as simple as possible, each example (`click`, `clicktmt`, ...)
+uses an explicit list of supported Zigbee devices that are referenced
+by by their IEEE address. This means that this code need to be
+adapted to your personnal configuration. Check the definitions of
+the `topics` JavaScript constant. These are the place where the
+IEEE have to be customized. 
+
+Considering using an external configuration file is an option that
+should be considered in the future to avoid modifying the common
+implementation.
