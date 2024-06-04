@@ -10,12 +10,36 @@ with Hiphop.
 Installation
 ------------
 
+You have two installation methods depending on whether you have a github
+account or not.
+
+Installation with a Github account
+----------------------------------
+
 To install the package in the current directory, execute the
 following commands:
 
 ```
 npm install https://github.com/manuel-serrano/hhmqtt.git
 cd node_modules/@hop/hhmqtt
+npm install
+npm run build
+```
+
+Installation without a Github account
+-------------------------------------
+
+To install the package, first download the ZIP file from github
+available at `https://github.com/manuel-serrano/hhmqtt.git`
+(you don't need an account for that). The ZIP file is located 
+at:
+
+https://github.com/manuel-serrano/hhmqtt/archive/refs/heads/master.zip
+
+```
+wget https://github.com/manuel-serrano/hhmqtt/archive/refs/heads/master.zip
+unzip master.zip
+cd hhmqtt-master/
 npm install
 npm run build
 ```
