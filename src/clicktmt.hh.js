@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/clicktmt.hh.ts     */
+/*    serrano/prgm/project/hhmqtt/hhmqtt/src/clicktmt.hh.js            */
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Thu Apr 11 12:05:21 2024 (serrano)                */
+/*    Last change :  Mon Jun 10 19:13:40 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT example                                              */
@@ -17,16 +17,9 @@ import { timeout } from "@hop/hiphop/modules/timeout.js";
 export { clicktmt };
 
 /*---------------------------------------------------------------------*/
-/*    Topics ...                                                       */
-/*---------------------------------------------------------------------*/
-interface Topics {
-   [propName: string]: { in?: string; out?: string; }
-}
-
-/*---------------------------------------------------------------------*/
 /*    topics                                                           */
 /*---------------------------------------------------------------------*/
-const topics: Topics = {
+const topics = {
    "zigbee2mqtt/bridge/devices": { in: "newDevices" },
    "zigbee2mqtt/0x00124b00246cd6a7": { in: "switch1" },
    "zigbee2mqtt/0x00124b0024c27d98": { in: "plug1", out: "plug1Out" }

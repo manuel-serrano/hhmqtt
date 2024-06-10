@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/utils.ts           */
+/*    serrano/prgm/project/hhmqtt/hhmqtt/src/utils.js                  */
 /*    -------------------------------------------------------------    */
 /*    Author      :  manuel serrano                                    */
 /*    Creation    :  Thu Oct  6 18:40:09 2022                          */
-/*    Last change :  Thu Apr  4 13:27:18 2024 (serrano)                */
+/*    Last change :  Mon Jun 10 19:10:28 2024 (serrano)                */
 /*    Copyright   :  2022-24 manuel serrano                            */
 /*    -------------------------------------------------------------    */
 /*    Utility functions                                                */
@@ -18,7 +18,7 @@ export { readJson, writeJson };
 /*---------------------------------------------------------------------*/
 /*    readJson ...                                                     */
 /*---------------------------------------------------------------------*/
-function readJson(path: string): any {
+function readJson(path) {
    try {
       const res = fs.readFileSync(path, { encoding: "utf8" });
       return JSON.parse(res);
@@ -31,7 +31,7 @@ function readJson(path: string): any {
 /*---------------------------------------------------------------------*/
 /*    writeJson ...                                                    */
 /*---------------------------------------------------------------------*/
-function writeJson(path: string, json: any): void {
+function writeJson(path, json) {
    fs.writeFileSync(path, JSON.stringify(json));
 }
 

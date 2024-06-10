@@ -1,9 +1,9 @@
 #*=====================================================================*/
-#*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/Makefile.npm           */
+#*    serrano/prgm/project/hhmqtt/hhmqtt/Makefile.npm                  */
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Thu Apr 11 11:33:31 2024 (serrano)                */
+#*    Last change :  Mon Jun 10 19:08:28 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -19,11 +19,11 @@ HHC=$(ROOT)/node_modules/@hop/hiphop/bin/hhc.mjs
 #*---------------------------------------------------------------------*/
 #*    Source files ...                                                 */
 #*---------------------------------------------------------------------*/
-HHMQTT_TS=utils.ts config.ts hhmqtt.ts
-HHMQTT_HH=click.hh.ts clicktmt.hh.ts
+HHMQTT_JS=utils.js config.js hhmqtt.js
+HHMQTT_HH=click.hh.js clicktmt.hh.js
 
-SOURCES=$(HHMQTT_TS:%=src/%) $(HHMQTT_HH:%=src/%) 
-OBJECTS=$(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.ts=dist/%.js)
+SOURCES=$(HHMQTT_JS:%=src/%) $(HHMQTT_HH:%=src/%) 
+OBJECTS=$(HHMQTT_JS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js)
 
 #*---------------------------------------------------------------------*/
 #*    Public targets                                                   */
@@ -36,13 +36,13 @@ clean::
 #*---------------------------------------------------------------------*/
 #*    Compilation rules and dependencies                               */
 #*---------------------------------------------------------------------*/
-dist/%.js: src/%.ts
-	$(HOPC) $(HFLAGS) -o $@ $<
+dist/%.js: src/%.js
+	cp $< $@
 
-src/%.ts: src/%.hh.ts
+src/%.js: src/%.hh.js
 	$(HHC) -o $@ $<
 
-$(HHMQTT_TS:%.ts=src/%.ts): $(HHMQTT_HH:%.hh.ts=src/%.ts)
+$(HHMQTT_JS:%.js=src/%.js): $(HHMQTT_HH:%.hh.js=src/%.js)
 
 $(OBJECTS): dist
 
