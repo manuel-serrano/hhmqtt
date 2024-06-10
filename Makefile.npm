@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Mon Jun 10 19:08:28 2024 (serrano)                */
+#*    Last change :  Mon Jun 10 19:16:43 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -23,7 +23,7 @@ HHMQTT_JS=utils.js config.js hhmqtt.js
 HHMQTT_HH=click.hh.js clicktmt.hh.js
 
 SOURCES=$(HHMQTT_JS:%=src/%) $(HHMQTT_HH:%=src/%) 
-OBJECTS=$(HHMQTT_JS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js)
+OBJECTS=$(HHMQTT_JS:%.js=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js)
 
 #*---------------------------------------------------------------------*/
 #*    Public targets                                                   */

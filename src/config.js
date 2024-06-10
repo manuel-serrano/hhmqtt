@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/config.ts          */
+/*    serrano/prgm/project/hhmqtt/hhmqtt/src/config.js                 */
 /*    -------------------------------------------------------------    */
 /*    Author      :  manuel serrano                                    */
 /*    Creation    :  Tue Sep 27 14:19:15 2022                          */
-/*    Last change :  Thu Apr  4 08:48:07 2024 (serrano)                */
+/*    Last change :  Mon Jun 10 19:17:07 2024 (serrano)                */
 /*    Copyright   :  2022-24 manuel serrano                            */
 /*    -------------------------------------------------------------    */
 /*    Hophhmqtt configuration                                         */
@@ -17,16 +17,6 @@ import * as path from "path";
 import { readJson } from "./utils.js";
 
 export { config };
-export { Configuration };
-
-/*---------------------------------------------------------------------*/
-/*    Configuration                                                    */
-/*---------------------------------------------------------------------*/
-interface Configuration {
-   version: string;
-   server: string;
-   verbose: number;
-}
 
 /*---------------------------------------------------------------------*/
 /*    cwd ...                                                          */
@@ -45,12 +35,12 @@ export const configDefault = {
 /*---------------------------------------------------------------------*/
 /*    User configuration                                               */
 /*---------------------------------------------------------------------*/
-const config: Configuration = configDefault;
+const config = configDefault;
 
 /*---------------------------------------------------------------------*/
 /*    rcFile ...                                                       */
 /*---------------------------------------------------------------------*/
-let rcFile: false | string = false;
+let rcFile = false;
 
 /*---------------------------------------------------------------------*/
 /*    init ...                                                         */
