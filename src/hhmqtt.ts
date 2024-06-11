@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/hhmqtt.ts          */
+/*    serrano/prgm/project/hhmqtt/hhmqtt.ts/src/hhmqtt.ts              */
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Apr  4 14:07:46 2024 (serrano)                */
+/*    Last change :  Tue Jun 11 07:40:58 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -40,7 +40,7 @@ function main(argv) {
    if (args.h || args.help) {
       usage(0);
    }
-   
+
    if (args.version) {
       console.log("HHMQTT v" + config.configDefault.version);
       usage(0);
@@ -58,7 +58,7 @@ function main(argv) {
       default: usage(1);
    }
    
-   // start the MQTT clien
+   // start the MQTT client
    let client = mqtt.connect(cfg.server);
    
    // bind the event handler
@@ -67,6 +67,10 @@ function main(argv) {
 
       console.log("client connect to", cfg.server);
       client.on("message", (topic, message) => {
+	 if (cfg.verbose >= 2) {
+	    console.log("receive message: ", topic);
+	 }
+		     
 	 if (topic === "zigbee2mqtt/bridge/devices") {
 	    const devices = JSON.parse(message.toString());
 
@@ -82,6 +86,11 @@ function main(argv) {
 		  if (example.topics[id]) {
 		     // we are interested by this device
 		     client.subscribe(id);
+
+		     if (cfg.verbose >= 1) {
+			console.log("subscribing: ", id);
+		     }
+		     
 		     if (example.topics[id].out) {
 			const idset = id + "/set";
 			example.mach.addEventListener(example.topics[id].out, v => client.publish(idset, JSON.stringify(v.nowval)));

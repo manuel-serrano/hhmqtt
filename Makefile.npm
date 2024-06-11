@@ -1,9 +1,9 @@
 #*=====================================================================*/
-#*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/Makefile.npm           */
+#*    serrano/prgm/project/hhmqtt/hhmqtt.ts/Makefile.npm               */
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Thu Apr 11 11:33:31 2024 (serrano)                */
+#*    Last change :  Tue Jun 11 07:47:54 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -28,7 +28,8 @@ OBJECTS=$(HHMQTT_TS:%.ts=dist/%.js) $(HHMQTT_HH:%.hh.ts=dist/%.js)
 #*---------------------------------------------------------------------*/
 #*    Public targets                                                   */
 #*---------------------------------------------------------------------*/
-build: $(OBJECTS)
+build: dist
+	$(MAKE) $(OBJECTS)
 
 clean:: 
 	rm -f $(OBJECTS)
@@ -36,15 +37,13 @@ clean::
 #*---------------------------------------------------------------------*/
 #*    Compilation rules and dependencies                               */
 #*---------------------------------------------------------------------*/
+.SUFFIXES: .ts .js .hh.ts
+
 dist/%.js: src/%.ts
 	$(HOPC) $(HFLAGS) -o $@ $<
 
 src/%.ts: src/%.hh.ts
 	$(HHC) -o $@ $<
-
-$(HHMQTT_TS:%.ts=src/%.ts): $(HHMQTT_HH:%.hh.ts=src/%.ts)
-
-$(OBJECTS): dist
 
 dist:
 	mkdir -p dist
