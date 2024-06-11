@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Mon Jun 10 19:16:43 2024 (serrano)                */
+#*    Last change :  Tue Jun 11 07:50:41 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -28,7 +28,8 @@ OBJECTS=$(HHMQTT_JS:%.js=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js)
 #*---------------------------------------------------------------------*/
 #*    Public targets                                                   */
 #*---------------------------------------------------------------------*/
-build: $(OBJECTS)
+build: dist
+	$(MAKE) $(OBJECTS)
 
 clean:: 
 	rm -f $(OBJECTS)
@@ -41,10 +42,6 @@ dist/%.js: src/%.js
 
 src/%.js: src/%.hh.js
 	$(HHC) -o $@ $<
-
-$(HHMQTT_JS:%.js=src/%.js): $(HHMQTT_HH:%.hh.js=src/%.js)
-
-$(OBJECTS): dist
 
 dist:
 	mkdir -p dist

@@ -98,3 +98,28 @@ Configuring the examples
 Considering using an external configuration file is an option that
 should be considered in the future to avoid modifying the common
 implementation.
+
+Mosquitto and zigbee2mqtt
+-------------------------
+
+HHMQTT requires both mosquitto and zigbee2mqtt to run in background.
+Zigbee2mqtt must be configured for the specific USB device. Usually
+this is done in a file such as:
+
+   /opt/ZB/zigbee2mqtt/data/configuration.yaml
+
+Normally, only the port device should be configured. 
+
+To run zigbee2mqtt:
+
+```
+(cd /opt/ZB/zigbee2mqtt; npm start)
+```
+
+See https://www.zigbee2mqtt.io/ for additional information.
+
+To log mosquitto messages:
+
+```
+sudo tail -f /var/log/mosquitto/mosquitto.log
+```

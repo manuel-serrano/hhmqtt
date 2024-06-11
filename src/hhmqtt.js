@@ -1,9 +1,9 @@
 /*=====================================================================*/
-/*    serrano/prgm/project/hiphop/hhmqtt/hhmqtt/src/hhmqtt.ts          */
+/*    serrano/prgm/project/hhmqtt/hhmqtt/src/hhmqtt.js                 */
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Apr  4 14:07:46 2024 (serrano)                */
+/*    Last change :  Tue Jun 11 08:11:42 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -67,6 +67,10 @@ function main(argv) {
 
       console.log("client connect to", cfg.server);
       client.on("message", (topic, message) => {
+	 if (cfg.verbose >= 2) {
+	    console.log("receive message: ", topic);
+	 }
+		     
 	 if (topic === "zigbee2mqtt/bridge/devices") {
 	    const devices = JSON.parse(message.toString());
 
@@ -81,6 +85,10 @@ function main(argv) {
 
 		  if (example.topics[id]) {
 		     // we are interested by this device
+		     if (cfg.verbose >= 1) {
+			console.log("subscribing: ", id);
+		     }
+		     
 		     client.subscribe(id);
 		     if (example.topics[id].out) {
 			const idset = id + "/set";
