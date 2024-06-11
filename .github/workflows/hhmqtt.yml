@@ -2,9 +2,9 @@ name: HHMQTT CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "ts-version" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "ts-version" ]
 
 jobs:
   build:
