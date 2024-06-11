@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Tue Jun 11 08:28:55 2024 (serrano)                */
+#*    Last change :  Tue Jun 11 09:34:27 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -47,3 +47,5 @@ src/%.ts: src/%.hh.ts
 
 dist:
 	mkdir -p dist
+
+dist/hhmqtt.js: dist/click.js dist/clicktmt.js
