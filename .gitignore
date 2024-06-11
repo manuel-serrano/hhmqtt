@@ -1,0 +1,10 @@
+Makefile
+config.status
+dist
+npm
+package-lock.json
+src/click.js
+src/click.js.map
+src/clicktmt.js
+src/clicktmt.js.map
+node_modules
