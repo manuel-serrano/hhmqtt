@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Jun 27 15:31:21 2024 (serrano)                */
+/*    Last change :  Thu Jun 27 15:32:09 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -95,10 +95,12 @@ function main(argv) {
 		  if (example.topics[id] && example.topics[id].out) {
 		     const idset = id + "/set";
 
-		     if (cfg.verbose >= 1) {
-			console.log("publishing, idset:", idset, "value:", JSON.stringify(v.nowval));
-		     }
-		     example.mach.addEventListener(example.topics[id].out, v => client.publish(idset, JSON.stringify(v.nowval)));
+		     example.mach.addEventListener(example.topics[id].out, v => {
+			if (cfg.verbose >= 1) {
+			   console.log("publishing, idset:", idset, "value:", JSON.stringify(v.nowval));
+			}
+			client.publish(idset, JSON.stringify(v.nowval));
+		     });
 		  }
 	       }
 	    });
