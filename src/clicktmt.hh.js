@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Mon Jun 10 19:13:40 2024 (serrano)                */
+/*    Last change :  Wed Jul 10 12:35:23 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT example                                              */
@@ -14,16 +14,8 @@
 /*---------------------------------------------------------------------*/
 import { ReactiveMachine } from "@hop/hiphop";
 import { timeout } from "@hop/hiphop/modules/timeout.js";
+import { topics } from "./topics.js";
 export { clicktmt };
-
-/*---------------------------------------------------------------------*/
-/*    topics                                                           */
-/*---------------------------------------------------------------------*/
-const topics = {
-   "zigbee2mqtt/bridge/devices": { in: "newDevices" },
-   "zigbee2mqtt/0x00124b00246cd6a7": { in: "switch1" },
-   "zigbee2mqtt/0x00124b0024c27d98": { in: "plug1", out: "plug1Out" }
-}
 
 /*---------------------------------------------------------------------*/
 /*    stateFlip ...                                                    */

@@ -3,7 +3,7 @@
 #*    -------------------------------------------------------------    */
 #*    Author      :  Manuel Serrano                                    */
 #*    Creation    :  Thu Apr 11 09:11:01 2024                          */
-#*    Last change :  Tue Jun 11 08:28:42 2024 (serrano)                */
+#*    Last change :  Wed Jul 10 13:08:03 2024 (serrano)                */
 #*    Copyright   :  2024 Manuel Serrano                               */
 #*    -------------------------------------------------------------    */
 #*    HHMQTT - An example of MQTT apps programmed with HipHop          */
@@ -19,11 +19,12 @@ HHC=$(ROOT)/node_modules/@hop/hiphop/bin/hhc.mjs
 #*---------------------------------------------------------------------*/
 #*    Source files ...                                                 */
 #*---------------------------------------------------------------------*/
-HHMQTT_JS=utils.js config.js hhmqtt.js
+HHMQTT_JS=utils.js config.js hhmqtt.js topics.js
 HHMQTT_HH=click.hh.js clicktmt.hh.js
+HHMQTT_HOP=web.hop.js
 
-SOURCES=$(HHMQTT_JS:%=src/%) $(HHMQTT_HH:%=src/%) 
-OBJECTS=$(HHMQTT_JS:%.js=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js)
+SOURCES=$(HHMQTT_JS:%=src/%) $(HHMQTT_HH:%=src/%) $(HHMQTT_HOP:%=src/%) 
+OBJECTS=$(HHMQTT_JS:%.js=dist/%.js) $(HHMQTT_HH:%.hh.js=dist/%.js) $(HHMQTT_HOP:%.hop.js=dist/%.js)
 
 #*---------------------------------------------------------------------*/
 #*    Public targets                                                   */
@@ -42,6 +43,9 @@ dist/%.js: src/%.js
 
 src/%.js: src/%.hh.js
 	$(HHC) -o $@ $<
+
+src/%.js: src/%.hop.js
+	$(HOPC) -o $@ $<
 
 dist:
 	mkdir -p dist

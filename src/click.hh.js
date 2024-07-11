@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 09:07:35 2024                          */
-/*    Last change :  Mon Jun 10 19:11:00 2024 (serrano)                */
+/*    Last change :  Wed Jul 10 12:34:32 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    HipHop MQTT                                                      */
@@ -13,16 +13,8 @@
 /*    The module                                                       */
 /*---------------------------------------------------------------------*/
 import { ReactiveMachine } from "@hop/hiphop";
+import { topics } from "./topics.js";
 export { click };
-
-/*---------------------------------------------------------------------*/
-/*    topics                                                           */
-/*---------------------------------------------------------------------*/
-const topics = {
-   "zigbee2mqtt/bridge/devices": { in: "newDevices" },
-   "zigbee2mqtt/0x00124b00246cd6a7": { in: "switch1" },
-   "zigbee2mqtt/0x00124b0024c27d98": { in: "plug1", out: "plug1Out" }
-}
 
 /*---------------------------------------------------------------------*/
 /*    stateFlip ...                                                    */

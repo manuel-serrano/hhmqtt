@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Thu Jun 27 15:30:35 2024 (serrano)                */
+/*    Last change :  Wed Jul 10 13:26:45 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -17,6 +17,7 @@ import * as config from "./config.js";
 import mqtt from "mqtt";
 import { click } from "./click.js";
 import { clicktmt } from "./clicktmt.js";
+import { webServer } from "./web.js";
 
 /*---------------------------------------------------------------------*/
 /*    usage ...                                                        */
@@ -25,8 +26,9 @@ function usage(status) {
    console.log("Usage hhmqtt [options] click|clicktmt");
    console.log("");
    console.log("Options:");
-   console.log("  -h|--help          This message.");
-   console.log("  --version          Display version.");
+   console.log("  -h|--help   This message.");
+   console.log("  --version   Display version.");
+   console.log("  --noweb     Don'Do not start a web server.");
    process.exit(status);
 }
 
@@ -61,6 +63,9 @@ function main(argv) {
    // start the MQTT clien
    let client = mqtt.connect(cfg.server);
    
+   // start the HTTP server
+   let hop = args.noweb ? false : webServer();
+   
    // bind the event handler
    client.on("connect", () => {
       client.subscribe("zigbee2mqtt/bridge/devices");
@@ -76,6 +81,9 @@ function main(argv) {
 
 	    console.log("== devices");
 
+	    // broadcast to web clients
+	    if (hop) hop.setDevices(devices);
+	    
 	    // build the hiphop program accordingly
 	    devices.forEach(d => {
 	       if (d.definition) {
@@ -95,15 +103,22 @@ function main(argv) {
 		  if (example.topics[id] && example.topics[id].out) {
 		     const idset = id + "/set";
 
-		     if (cfg.verbose >= 1) {
-			console.log("publishing, idset: ", idset, "value:", JSON.stringify(v.nowval));
-		     }
-		     example.mach.addEventListener(example.topics[id].out, v => client.publish(idset, JSON.stringify(v.nowval)));
+		     example.mach.addEventListener(example.topics[id].out, v => {
+			if (cfg.verbose >= 1) {
+			   console.log("publishing, idset: ", idset, "value:", JSON.stringify(v.nowval));
+			}
+			client.publish(idset, JSON.stringify(v.nowval));
+		     });
 		  }
 	       }
 	    });
 	 }
 
+	 // forward the MQTT message to Hop
+	 if (hop) {
+	    hop.broadcast("msg", example);
+	 }
+	 
 	 // forward the MQTT message to HipHop
 	 if (example.topics[topic]?.in) {
 	    example.mach.react({[example.topics[topic].in]: JSON.parse(message.toString())});

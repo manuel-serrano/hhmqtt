@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  manuel serrano                                    */
 /*    Creation    :  Tue Sep 27 14:19:15 2022                          */
-/*    Last change :  Mon Jun 10 19:17:07 2024 (serrano)                */
+/*    Last change :  Wed Jul 10 13:30:59 2024 (serrano)                */
 /*    Copyright   :  2022-24 manuel serrano                            */
 /*    -------------------------------------------------------------    */
 /*    Hophhmqtt configuration                                         */
@@ -28,8 +28,10 @@ const cwd = path.dirname(import.meta.url.toString().replace(/^file:\/\//, ""));
 /*---------------------------------------------------------------------*/
 export const configDefault = {
    version: readJson(cwd + "/../" + "package.json").version,
-   server: "mqtt://localhost:1883",
-   verbose: 1
+   verbose: 1,
+   mqqtServer: "mqtt://localhost:1883",
+   webPorts: { http: 7777 },
+   webUsers: [ { name: "anonymous", services: "*" } ]
 }
 
 /*---------------------------------------------------------------------*/
