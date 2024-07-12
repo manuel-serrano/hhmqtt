@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Thu Apr  4 08:18:29 2024                          */
-/*    Last change :  Wed Jul 10 13:26:45 2024 (serrano)                */
+/*    Last change :  Fri Jul 12 07:50:31 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    hhmqtt example                                                   */
@@ -80,7 +80,6 @@ function main(argv) {
 	    const devices = JSON.parse(message.toString());
 
 	    console.log("== devices");
-
 	    // broadcast to web clients
 	    if (hop) hop.setDevices(devices);
 	    

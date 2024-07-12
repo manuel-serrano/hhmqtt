@@ -3,7 +3,7 @@
 /*    -------------------------------------------------------------    */
 /*    Author      :  Manuel Serrano                                    */
 /*    Creation    :  Wed Jul 10 12:38:53 2024                          */
-/*    Last change :  Thu Jul 11 17:38:53 2024 (serrano)                */
+/*    Last change :  Fri Jul 12 07:48:48 2024 (serrano)                */
 /*    Copyright   :  2024 Manuel Serrano                               */
 /*    -------------------------------------------------------------    */
 /*    MQTT web interface                                               */
@@ -28,7 +28,7 @@ function hhmqtt() {
          function devicesToHtml(devices) {
             return <table>
                ${devices.map(d => <tr>
-		     <td>${d.ieee_address}</td><td>${d.friendly_name}</td>
+		  <td>${d.ieee_address}</td><td>${d.friendly_name}</td><td>${d.definition?.description || ""}</td>
 		  </tr>)}
 	    </table>;
 	 }
@@ -41,13 +41,13 @@ function hhmqtt() {
 	 }
    
          server.addEventListener("msg", e => {
-	    console.log("MSG...");
             const con = document.getElementById("console");
-	    con.innerHTML= con.innerHTML + "<br/>", e.value;
+	    con.innerHTML= con.innerHTML + "<br/>" + e.value;
 	 });
          server.addEventListener("devices", e => setDevices(e.value));
 
          setDevices(${this.hop.devices});
+
       </script>
 
       <h1>HHMQTT</h1>
@@ -55,9 +55,16 @@ function hhmqtt() {
       <div id="devices">&nbsp;</div>
       <h2>console</h2>
       <div id="console">&nbsp;</div>
-   
+      
+      <button onclick=~{${PingDate}().post()}>ping</button>
    </html>;
 }
+
+
+/*---------------------------------------------------------------------*/
+/*    PingDate ...                                                     */
+/*---------------------------------------------------------------------*/
+let PingDate;
 
 /*---------------------------------------------------------------------*/
 /*    webServer ...                                                    */
@@ -65,7 +72,6 @@ function hhmqtt() {
 function webServer() {
    const hop = new Hop({ ports: config.webPorts, users: config.webUsers });
    const svc = hop.Service(hhmqtt);
-   
    hop.listen().then(() => console.log(`${svc()} ready...`));
 
    hop.setDevices = devices => {
@@ -76,6 +82,10 @@ function webServer() {
       hop.broadcast("devices", devices);
    };
    
+   PingDate = hop.Service(() => {
+      hop.broadcast("msg", Date());
+   });
+			
    return hop;
 }
    
